@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #0A0F24;
+        color: #fff;
+        font-family: Arial, sans-serif;
+    }
+
+    .about-section {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeInUp 1s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Read More Button Styling */
+.read-more-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center; /* Centers the button content */
+    margin: 20px auto; /* Center the button horizontally */
+    display: block; /* Allows margin auto to work */
+}
+
+.read-more-btn:hover {
+    background-color: #0056b3;
+}
+
+    /* Modal Overlay */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 999;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: 90%;
+        max-width: 400px;
+        color: white;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
+        transform: scale(0.8);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Personal Information Header */
+    .modal-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color:rgb(240, 247, 255);
+    }
+
+    /* Centered Profile Picture */
+    .modal-content .profile-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .modal-content img {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.7);
+    }
+
+    /* Close Button */
+    .close-btn {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .close-btn:hover {
+        background-color: #cc0000;
+    }
+</style>
+
+<div class="about-section py-5 text-white text-center">
+    <div class="container">
+        <h1 class="display-4 mb-3" style="font-weight: bold;">About <span style="color: #007bff;">Me</span></h1>
+        <div class="d-flex flex-column align-items-center">
+            <!-- Profile Picture -->
+            <div class="profile-image mb-3" style="position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; border-radius: 50%; overflow: hidden; box-shadow: 0 0 15px #007bff;">
+                <img src="{{ url_for('static', filename='images/kuyab.jpg') }}" alt="Profile Picture" class="img-fluid" width="160" style="position: relative; border-radius: 50%;">
+            </div>
+            <!-- About Me Content -->
+            <h3 class="fw-bold" style="text-shadow: 2px 2px 5px rgba(0, 123, 255, 0.7);">Student Developer!</h3>
+            <p class="lead px-4" style="max-width: 700px; font-size: 1.1rem; text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.2);">
+                Hi, I'm <strong>Norhan D. Kuyab</strong>, a 3rd-year BSIT student. I specialize in Python basic programming, 
+                basic WiFi hacking, and UX/UI design. I'm always eager to learn new skills and take on challenging projects. 
+                Let's create something amazing together!
+            </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+                        <!-- Read More Button -->
+            <button class="read-more-btn" onclick="openModal()">Read More</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal (Hidden by Default) -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-content">
+        <!-- Personal Information Title -->
+        <h2>Personal Information</h2>
+        <!-- Centered Profile Image -->
+        <div class="profile-image">
+            <img src="{{ url_for('static', filename='images/personal.jpg') }}" alt="Personal Info Image">
+        </div>
+        <p><strong>Full Name:</strong> Norhan D. Kuyab</p>
+        <p><strong>Year:</strong> 3rd year</p>
+        <p><strong>Student:</strong> Cfcst pikit extention unit</p>
+        <p><strong>Gender:</strong> Male</p>
+        <p><strong>Date of Birth :</strong> November, 04, 2003</p>
+        <p><strong>Location:</strong> Pebpoloan, carmen, cotabato</p>
+        <p><strong>Interests:</strong> Cybersecurity, AI, Web Development</p>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<!-- JavaScript for Modal -->
+<script>
+    function openModal() {
+        var modalOverlay = document.getElementById("modalOverlay");
+        var modalContent = document.querySelector(".modal-content");
+
+        modalOverlay.style.display = "flex"; // Show modal
+        setTimeout(() => {
+            modalOverlay.style.opacity = "1";
+            modalContent.style.transform = "scale(1)";
+            modalContent.style.opacity = "1";
+        }, 10);
+    }
+
+    function closeModal() {
+        var modalOverlay = document.getElementById("modalOverlay");
+        var modalContent = document.querySelector(".modal-content");
+
+        modalOverlay.style.opacity = "0";
+        modalContent.style.transform = "scale(0.8)";
+        modalContent.style.opacity = "0";
+
+        setTimeout(() => {
+            modalOverlay.style.display = "none";
+        }, 300);
+    }
+</script>
+
+{% endblock %}

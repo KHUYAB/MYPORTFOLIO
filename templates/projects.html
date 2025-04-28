@@ -1,0 +1,176 @@
+<!-- templates/projects.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background-color: rgb(40, 46, 73);
+        color: white;
+    }
+    .project-section {
+        background: rgb(25, 24, 46);
+        padding: 50px 0;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .project-section.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .project-card {
+        background: rgb(71, 71, 67);
+        color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 10px rgba(77, 74, 74, 0.1);
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+    .project-card:hover {
+        transform: scale(1.05);
+    }
+    .project-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .fullscreen-view {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 1000;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .fullscreen-view.show {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .fullscreen-image {
+        max-width: 90%;
+        max-height: 80%;
+        border-radius: 10px;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fullscreen-image.fade {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    .close-btn {
+        top: 20px;
+        right: 20px;
+        background: red;  /* Kulay Pula */
+        color: white;
+        font-weight: bold;
+    }
+    
+    .prev-btn, .next-btn {
+        background: dodgerblue; /* Kulay Asul */
+        color: white;
+        font-weight: bold;
+    }
+    
+    .prev-btn:hover, .next-btn:hover {
+        background: deepskyblue; /* Mas Maliwanag na Asul */
+    }
+    
+    .close-btn:hover {
+        background: darkred; /* Mas Madilim na Pula */
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const projectSection = document.querySelector(".project-section");
+        projectSection.classList.add("show");
+        
+        const projectCards = document.querySelectorAll(".project-card");
+        const fullscreenView = document.getElementById("fullscreen-view");
+        const fullscreenImage = document.getElementById("fullscreen-image");
+        const closeBtn = document.getElementById("close-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const prevBtn = document.getElementById("prev-btn");
+        let currentIndex = 0;
+        let projectImages = [];
+
+        projectCards.forEach((card, index) => {
+            projectImages.push(card.querySelector(".project-image").src);
+            card.addEventListener("click", function () {
+                currentIndex = index;
+                fullscreenImage.classList.add("fade");
+                setTimeout(() => {
+                    fullscreenImage.src = projectImages[currentIndex];
+                    fullscreenImage.classList.remove("fade");
+                }, 200);
+                fullscreenView.style.display = "flex";
+                setTimeout(() => fullscreenView.classList.add("show"), 10);
+            });
+        });
+
+        closeBtn.addEventListener("click", function () {
+            fullscreenView.classList.remove("show");
+            setTimeout(() => fullscreenView.style.display = "none", 300);
+        });
+
+        function slideImage(indexChange) {
+            fullscreenImage.classList.add("fade");
+            setTimeout(() => {
+                currentIndex = (currentIndex + indexChange + projectImages.length) % projectImages.length;
+                fullscreenImage.src = projectImages[currentIndex];
+                fullscreenImage.classList.remove("fade");
+            }, 300);
+        }
+        
+
+        nextBtn.addEventListener("click", function () {
+            slideImage(1);
+        });
+
+        prevBtn.addEventListener("click", function () {
+            slideImage(-1);
+        });
+    });
+</script>
+
+<div class="container project-section">
+    <h1 class="text-center mb-4">My all project</h1>
+    <div class="row">
+        {% set projects = [
+            {'name': 'my own Fenitration a facebook password', 'image': 'hacking.jpg'},
+            {'name': 'here my project game using flask', 'image': 'flappy.png'},
+            {'name': 'Here my example to hacking a wifi password', 'image': 'Th.png'},
+            {'name': 'My own design for my passion a designer', 'image': 'kuyab designer.png'},
+            {'name': 'here my project game for app.dev subjects', 'image': 'Game.png'}
+        ] %}
+        
+        {% for project in projects %}
+        <div class="col-md-4 mb-4">
+            <div class="card project-card">
+                <img src="{{ url_for('static', filename='images/' ~ project.image) }}" class="card-img-top project-image" alt="Project Image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.name }}</h5>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="fullscreen-view" class="fullscreen-view">
+    <button id="close-btn" class="close-btn">Close</button>
+    <button id="prev-btn" class="prev-btn">&#9665;</button>
+    <img id="fullscreen-image" class="fullscreen-image" src="" alt="Project Preview">
+    <button id="next-btn" class="next-btn">&#9655;</button>
+</div>
+
+{% endblock %}
